@@ -33,4 +33,9 @@ public class AuthController {
     public UserInfoDto info() {
         return authService.info();
     }
+
+    @DeleteMapping("/user")
+    public void deleteAll(){
+        authService.delete();
+    }
 }

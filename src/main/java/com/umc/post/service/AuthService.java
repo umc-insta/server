@@ -10,5 +10,7 @@ public interface AuthService {
 
     void join(UserJoinDto userJoinDto);
 
+    void delete();
+
     UserInfoDto info();
 }

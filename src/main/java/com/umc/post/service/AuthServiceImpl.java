@@ -81,6 +81,11 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
     }
 
+    @Override
+    public void delete(){
+        userRepository.deleteAll();
+    }
+
     private UserDetails createUserDetails(User user) {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
