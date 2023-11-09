@@ -9,7 +9,11 @@ import com.umc.post.data.dto.UserJoinDto;
 import com.umc.post.data.dto.UserLoginDto;
 import com.umc.post.data.entity.User;
 import com.umc.post.repository.UserRepository;
+import jakarta.transaction.Transactional;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,6 +22,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -55,6 +61,9 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public void join(UserJoinDto userJoinDto) {
+        if (isDuplicate(userJoinDto.getUserId())) {
+            throw new IllegalArgumentException("User already exists with this userId");
+        }
         User user = new User();
         user.setUserId(userJoinDto.getUserId());
         user.setPassword(passwordEncoder.encode(userJoinDto.getPassword()));
@@ -64,6 +73,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         else {
             user.setRole(Role.USER);
         }
+
         user.setUserName(userJoinDto.getUserName());
         userRepository.save(user);
     }
@@ -86,11 +96,28 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         userRepository.deleteAll();
     }
 
+    @Override
+    public List<User> getAllUser(){
+        return userRepository.findAll();
+    }
+
+    @Override
+    public User getUserById(String id){
+        return userRepository.findByUserId(id).get();
+    }
+
     private UserDetails createUserDetails(User user) {
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .roles(user.getRole().toString())
                 .build();
+    }
+
+    /*
+        register 시 중복 user id 인지 체크
+     */
+    private boolean isDuplicate(String id){
+        return userRepository.findByUserId(id).isPresent();
     }
 }
