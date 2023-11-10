@@ -36,3 +36,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### FOR Security ###
+src/main/resources/application-*
