@@ -11,16 +11,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class S3UploadService {
+public class S3UploadService implements FileUploadService {
 
     private final AmazonS3 amazonS3;
 
-    //@Value("${cloud.aws.s3.bucket}")
-    private String bucket = "test-bucket";
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
 
+    @Override
     public String saveFile(MultipartFile multipartFile) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();
-        String nfcFilename = getNFCFilename(originalFilename);
+        String nfcFilename = convertOrginalToNFC(originalFilename);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(multipartFile.getSize());
@@ -30,14 +31,14 @@ public class S3UploadService {
         return amazonS3.getUrl(bucket, nfcFilename).toString();
     }
 
+    @Override
     public void deleteFile(String originalFilename) {
-        String nfcFilename = getNFCFilename(originalFilename);
+        String nfcFilename = convertOrginalToNFC(originalFilename);
         amazonS3.deleteObject(bucket, nfcFilename);
     }
 
     // NFC 방식으로 변환하지 않는다면, OS마다 originalFilename을 다르게 처리
-    private String getNFCFilename (String originalFilename) {
+    private String convertOrginalToNFC(String originalFilename) {
         return Normalizer.normalize(originalFilename, Normalizer.Form.NFC);
     }
-
 }
