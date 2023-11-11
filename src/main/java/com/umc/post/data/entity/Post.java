@@ -1,59 +1,39 @@
 package com.umc.post.data.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "Post")
+@Table(name = "게시글")
 public class Post {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String title;
+    @Column(name = "post_id", nullable = false)
+    private String postId;
 
-    @Column(nullable = false)
-    private String author;
+    @Column(name = "thumbnail")
+    private String thumbnail;
 
-    @Column(nullable = false)
-    private String body;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column(nullable = false)
-    private Date timestamp;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Like> likes;
 
-    public String getTitle() {
-        return title;
-    }
+    @Column(name = "content")
+    private String content;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
-    public String getAuthor() {
-        return author;
-    }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
 }

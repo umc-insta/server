@@ -4,9 +4,14 @@ import com.umc.post.config.security.TokenInfo;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
 import com.umc.post.data.dto.UserLoginDto;
+import com.umc.post.data.entity.User;
 import com.umc.post.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,8 +39,29 @@ public class AuthController {
         return authService.info();
     }
 
-    @DeleteMapping("/user")
-    public void deleteAll(){
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUser(){
+        List<User> users = (List<User>) authService.getAllUser();
+        if (users == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(users);
+        }
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable String id){
+        User user = authService.getUserById(id);
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(user);
+        }
+    }
+
+    @DeleteMapping("/users")
+    public ResponseEntity<String> deleteAll(){
         authService.delete();
+        return ResponseEntity.status(HttpStatus.OK).body("all users deleted");
     }
 }

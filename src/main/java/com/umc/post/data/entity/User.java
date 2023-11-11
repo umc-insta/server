@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Builder
 @NoArgsConstructor
@@ -24,16 +25,22 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String userId;
-
-    @Column(nullable = false)
     private String password;
-
-    @Column(nullable = false)
-    private String userName;
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+
+    @Column(name = "user_nickname")
+    private String userNickname;
+
+    @Column(name = "user_name", nullable = false)
+    private String userName;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts;
 
     public Role getRole() {
         return role;
