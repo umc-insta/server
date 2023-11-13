@@ -7,6 +7,7 @@ import com.umc.post.config.security.TokenInfo;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
 import com.umc.post.data.dto.UserLoginDto;
+import com.umc.post.data.dto.UserProfileDto;
 import com.umc.post.data.entity.User;
 import com.umc.post.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -75,6 +76,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         }
 
         user.setUserName(userJoinDto.getUserName());
+
         userRepository.save(user);
     }
 
