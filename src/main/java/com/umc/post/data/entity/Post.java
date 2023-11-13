@@ -28,14 +28,17 @@ public class Post {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Like> likes;
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+//    private List<Like> likes;
+//
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+//    private List<Comment> comments;
+
+    @Column(name = "username")
+    private String username;
 
     @Column(name = "content")
     private String content;
-
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Comment> comments;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;

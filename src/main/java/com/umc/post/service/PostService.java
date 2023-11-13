@@ -1,8 +1,12 @@
 package com.umc.post.service;
 
+import com.umc.post.data.dto.ArticleDto;
 import com.umc.post.data.dto.PostDto;
+import com.umc.post.data.dto.UserProfileDto;
+import com.umc.post.data.entity.ArticleForTest;
 import com.umc.post.data.entity.Post;
 import com.umc.post.data.entity.User;
+import com.umc.post.repository.ArticleForTestRepository;
 import com.umc.post.repository.PostRepository;
 import com.umc.post.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +23,7 @@ import java.util.Optional;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final ArticleForTestRepository articleRepository;
     private final UserRepository userRepository;
 
     // get all posts
@@ -59,7 +65,7 @@ public class PostService {
     }
     // create post
     // POST /posts
-    public Post createPost(PostDto postDto) { // todo : 왜안됨이거
+    public Post createPost(PostDto postDto) { // todo : 고쳐야될거 투성이
 //         Optional<User> user = userRepository.findByUserId(postDto.getUserId());
 
 //        if (user.isPresent()) {
@@ -75,8 +81,13 @@ public class PostService {
 //        } else {
 //            throw new IllegalArgumentException("not find user id: " + postDto.getUserId());
 //        }
+
+
+        Date now = new Date();
+        String id = now.toString();
         Post post = Post.builder()
-                    .postId(postDto.getPostId())
+                    .postId(id)
+                    //.username(user.getUsername())
                     .thumbnail(postDto.getThumbnail())
                     .content(postDto.getContent())
                     .build();
@@ -107,6 +118,23 @@ public class PostService {
             throw new IllegalArgumentException("not find post id: " + postId);
         }
     }
-    
+
+
+    /*
+        ARTICLE CREATE
+        TEST
+
+     */
+    public ArticleForTest createArticle(ArticleDto articleDto){
+        Date now = new Date();
+        String id = now.toString();
+        ArticleForTest article = ArticleForTest.builder()
+                .articleId(id)
+                .title(articleDto.getTitle())
+                .content(articleDto.getContent())
+                .build();
+
+        return articleRepository.save(article);
+    }
 
 }

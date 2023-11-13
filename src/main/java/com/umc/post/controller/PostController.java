@@ -1,7 +1,10 @@
 package com.umc.post.controller;
 
+import com.umc.post.data.dto.ArticleDto;
 import com.umc.post.data.dto.PostDto;
+import com.umc.post.data.entity.ArticleForTest;
 import com.umc.post.data.entity.Post;
+import com.umc.post.repository.ArticleForTestRepository;
 import com.umc.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -55,6 +58,20 @@ public class PostController {
     public ResponseEntity<String> deletePost(@PathVariable Long id){
        postService.deletePost(id);
        return ResponseEntity.status(HttpStatus.OK).body(id+ ": post is deleted");
+    }
+
+
+    /*
+
+        ARTICLE CREATE
+        TEST
+        POST /posts/articles
+
+     */
+    @PostMapping("/articles")
+    public ResponseEntity<?> createPost(@RequestBody ArticleDto articleDto){
+        ArticleForTest article = postService.createArticle(articleDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(article);
     }
 
 }
