@@ -25,8 +25,6 @@ public class UserProfileController {
 
         // User 정보를 UserProfileDto로 변환
         UserProfileDto userProfileDto = convertToUserProfileDto(user);
-
-        // ResponseEntity로 감싸서 반환
         return ResponseEntity.ok(userProfileDto);
     }
 

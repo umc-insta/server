@@ -1,24 +1,35 @@
 package com.umc.post.data.dto;
 
-import lombok.AccessLevel;
+import com.umc.post.data.entity.Post;
 import lombok.Data;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Setter(AccessLevel.NONE)
 public class PostDto {
 
     private String postId;
-    private String userId;
-
-    @Setter
+    private String username;
+    private String photoUrl;
+//    private List<Like> likes;
+//    private List<Comment> comments;
     private String content;
-
-
     private String thumbnail;
     private LocalDateTime createdAt;
+
+    public Post toEntity(){
+        return Post.builder()
+                .postId(postId)
+                .username(username)
+                .photoUrl(photoUrl)
+//                .likes(likes)
+//                .comments(comments)
+                .content(content)
+                .thumbnail(thumbnail)
+                .createdAt(createdAt)
+                .build();
+    }
+
+
 
 }

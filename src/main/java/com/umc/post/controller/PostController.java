@@ -40,7 +40,8 @@ public class PostController {
     // POST /posts
     @PostMapping("")
     public ResponseEntity<Post> createPost(@RequestBody PostDto postDto){
-        Post post = postService.createPost(postDto);
+        Post post = postDto.toEntity();
+        postService.createPost(post);
         return ResponseEntity.status(HttpStatus.CREATED).body(post);
     }
 

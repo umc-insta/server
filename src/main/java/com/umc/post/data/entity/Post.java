@@ -18,7 +18,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "post_id", nullable = false)
+    @Column(name = "post_id", nullable = false, unique = true)
     private String postId;
 
     @Column(name = "thumbnail")
@@ -37,6 +37,9 @@ public class Post {
     @Column(name = "username")
     private String username;
 
+    @Column(name = "photo_url")
+    private String photoUrl;
+
     @Column(name = "content")
     private String content;
 
@@ -45,7 +48,9 @@ public class Post {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
+        this.postId = LocalDateTime.now().toString();
     }
+
 
 }

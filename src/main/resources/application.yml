@@ -23,8 +23,9 @@ spring:
     username: root
     password: zpzzgjdg@$^1
   jpa:
+    database: mysql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
