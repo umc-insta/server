@@ -1,6 +1,7 @@
 package com.umc.post.service;
 
 import com.umc.post.data.dto.PostCreateDto;
+import com.umc.post.data.dto.PostResponseDto;
 import com.umc.post.data.entity.Post;
 import java.io.IOException;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public interface PostService {
     void uploadPost(PostCreateDto request) throws IOException;
 
-    List<Post> getAllPosts();
+    List<PostResponseDto> getAllPosts();
 
     Post getPostById(Long id);
 

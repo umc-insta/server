@@ -6,15 +6,16 @@ import java.io.IOException;
 import java.text.Normalizer;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class
-S3Service implements FileUploadService {
+public class S3Service implements FileUploadService {
 
+    @Autowired
     private final AmazonS3 amazonS3;
 
     @Value("${cloud.aws.s3.bucket}")

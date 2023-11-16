@@ -36,10 +36,10 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = false)
-    private String userNickName; // username
+    private String userNickName; // user nickname
 
     @Column(nullable = false)
-    private String userName; // username
+    private String userName; // userName
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();

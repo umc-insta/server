@@ -1,10 +1,12 @@
 package com.umc.post.controller;
 
 import com.umc.post.data.dto.PostCreateDto;
+import com.umc.post.data.dto.PostResponseDto;
 import com.umc.post.data.entity.Post;
 import com.umc.post.service.PostServiceImpl;
 import java.io.IOException;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/posts")
 public class PostController {
 
+    @Autowired
     PostServiceImpl postServiceImpl;
 
     @PostMapping("/upload")
@@ -25,8 +28,8 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Post>> getAllPosts(){
-        List<Post> posts = postServiceImpl.getAllPosts();
+    public ResponseEntity<List<PostResponseDto>> getAllPosts(){
+        List<PostResponseDto> posts = postServiceImpl.getAllPosts();
         return ResponseEntity.status(HttpStatus.OK).body(posts);
     }
 

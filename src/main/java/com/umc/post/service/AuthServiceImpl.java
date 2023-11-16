@@ -11,6 +11,7 @@ import com.umc.post.data.entity.User;
 import com.umc.post.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,8 +26,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService, UserDetailsService {
 
+    @Autowired
     private final UserRepository userRepository;
+    @Autowired
     private final PasswordEncoder passwordEncoder;
+    @Autowired
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
@@ -61,7 +65,6 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         else {
             user.setRole(Role.USER);
         }
-
 
         userRepository.save(user);
     }
