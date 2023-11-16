@@ -37,7 +37,6 @@ public class Post {
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonBackReference
     @JoinColumn(name="user")
     private User user;
 
