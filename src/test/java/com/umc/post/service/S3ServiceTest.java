@@ -1,13 +1,11 @@
 package com.umc.post.service;
 
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import com.amazonaws.services.s3.AmazonS3;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.Normalizer;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.mock.web.MockMultipartFile;
 
-class S3UploadServiceTest {
+class S3ServiceTest {
 
-    private S3UploadService s3UploadService;
+    private S3Service s3Service;
 
     @Mock
     private AmazonS3 mockAmazonS3;
@@ -26,7 +24,7 @@ class S3UploadServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        s3UploadService = new S3UploadService(mockAmazonS3);
+        s3Service = new S3Service(mockAmazonS3);
 
         try {
             URL mockUrl = new URL("https://example.com/testfile.txt");
@@ -48,7 +46,7 @@ class S3UploadServiceTest {
 
         // when
 
-        String uploadedURL = s3UploadService.saveFile(mockMultipartFile);
+        String uploadedURL = s3Service.upLoadFile(mockMultipartFile);
 
         // then
         Assertions.assertThat(uploadedURL)

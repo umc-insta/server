@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
     private final AuthService authService;
 
     public AuthController(AuthService authService) {
@@ -41,12 +40,7 @@ public class AuthController {
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUser(){
-        List<User> users = (List<User>) authService.getAllUser();
-        if (users == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body(users);
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(authService.getAllUser());
     }
 
     @GetMapping("/users/{id}")

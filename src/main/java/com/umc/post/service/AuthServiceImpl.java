@@ -9,11 +9,8 @@ import com.umc.post.data.dto.UserJoinDto;
 import com.umc.post.data.dto.UserLoginDto;
 import com.umc.post.data.entity.User;
 import com.umc.post.repository.UserRepository;
-import jakarta.transaction.Transactional;
-import org.apache.coyote.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,26 +20,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService, UserDetailsService {
 
-    @Autowired
     private final UserRepository userRepository;
-
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-
-    @Autowired
     private final JwtTokenProvider jwtTokenProvider;
-
-    public AuthServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Override
     public TokenInfo login(UserLoginDto userLoginDto) {
@@ -67,6 +52,9 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         User user = new User();
         user.setUserId(userJoinDto.getUserId());
         user.setPassword(passwordEncoder.encode(userJoinDto.getPassword()));
+        user.setUserNickName(userJoinDto.getUserNickName());
+        user.setUserName(userJoinDto.getUserName());
+        user.setPosts(null);
         if(userJoinDto.getRole().equals("ROLE_ADMIN")) {
             user.setRole(Role.ADMIN);
         }
@@ -74,7 +62,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
             user.setRole(Role.USER);
         }
 
-        user.setUserName(userJoinDto.getUserName());
+
         userRepository.save(user);
     }
 

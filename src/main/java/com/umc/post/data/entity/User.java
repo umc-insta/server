@@ -2,9 +2,12 @@ package com.umc.post.data.entity;
 
 import com.umc.post.config.security.Role;
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +19,9 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Getter
+@Setter
+@Table(name = "유저")
 public class User implements UserDetails {
 
     @Id
@@ -23,29 +29,23 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String userId;
+    @Column(name = "user_id", nullable = false, unique = true)
+    private String userId; // login id
 
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private String userName;
+    private String userNickName; // username
+
+    @Column(nullable = false)
+    private String userName; // username
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Post> posts = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    public Role getRole() {
-        return role;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -56,25 +56,9 @@ public class User implements UserDetails {
         return authorities;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
     @Override
     public String getUsername() {
-        return null;
+        return userId;
     }
 
     @Override
@@ -101,4 +85,7 @@ public class User implements UserDetails {
         this.password = password;
     }
 
+    public void addPost(Post post) {
+        this.posts.add(post);
+    }
 }

@@ -21,7 +21,7 @@ public class FileUploadController {
 
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file) throws Exception {
-        return fileUploadService.saveFile(file);
+        return fileUploadService.upLoadFile(file);
     }
 
     @PostMapping("/delete")
