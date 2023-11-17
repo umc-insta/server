@@ -4,11 +4,16 @@ import com.umc.post.config.security.JwtTokenProvider;
 import com.umc.post.config.security.Role;
 import com.umc.post.config.security.SecurityUtil;
 import com.umc.post.config.security.TokenInfo;
+import com.umc.post.data.dto.PostResponseDto;
 import com.umc.post.data.dto.UserDto;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
+import com.umc.post.data.dto.UserListDto;
 import com.umc.post.data.dto.UserLoginDto;
+import com.umc.post.data.dto.UserProfileDto;
+import com.umc.post.data.entity.Post;
 import com.umc.post.data.entity.User;
+import com.umc.post.repository.PostRepository;
 import com.umc.post.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +38,8 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     @Autowired
     private final JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private final PostRepository postRepository;
 
     @Override
     public TokenInfo login(UserLoginDto userLoginDto) {
@@ -74,6 +81,17 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     @Override
+    public UserListDto searchUsersByPartialLoginId(String userLoginId) {
+        List<User> users = userRepository.findAll().stream().filter(e -> e.getUserLoginId().contains(userLoginId))
+                .toList();
+
+        List<UserDto> userDtos = users.stream().map(User::toDto).toList();
+
+        UserListDto userListDto = new UserListDto(userDtos);
+        return userListDto;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String userLoginId) throws UsernameNotFoundException {
         return userRepository.findByUserLoginId(userLoginId)
                 .map(this::createUserDetails)
@@ -86,13 +104,17 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     @Override
-    public List<User> getAllUser() {
-        return userRepository.findAll();
+    public List<UserDto> getAllUser() {
+        return userRepository.findAll().stream().map(e -> e.toDto()).toList();
     }
 
     @Override
-    public UserDto getUserByLoginId(String userLoginId) {
+    public UserProfileDto getUserByLoginId(String userLoginId) {
         User user = userRepository.findByUserLoginId(userLoginId).orElseThrow();
+
+        List<PostResponseDto> postResponseDtos = postRepository.findAll().stream()
+                .filter(e -> e.getUser().getUserLoginId().equals(userLoginId))
+                .map(Post::toDto).toList();
 
         UserDto userDto = UserDto.builder()
                 .userLoginId(user.getUserLoginId())
@@ -101,7 +123,12 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
                 .userName(user.getUsername())
                 .build();
 
-        return userDto;
+        UserProfileDto userProfileDto = UserProfileDto.builder()
+                .userDto(userDto)
+                .postResponseDtos(postResponseDtos)
+                .build();
+
+        return userProfileDto;
     }
 
     private UserDetails createUserDetails(User user) {

@@ -4,7 +4,9 @@ import com.umc.post.config.security.TokenInfo;
 import com.umc.post.data.dto.UserDto;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
+import com.umc.post.data.dto.UserListDto;
 import com.umc.post.data.dto.UserLoginDto;
+import com.umc.post.data.dto.UserProfileDto;
 import com.umc.post.data.entity.User;
 import com.umc.post.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,12 +43,12 @@ public class AuthController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUser(){
-        return ResponseEntity.status(HttpStatus.OK).body(authService.getAllUser());
+    public List<UserDto> getAllUser(){
+        return authService.getAllUser();
     }
 
     @GetMapping("/users/{userLoginId}")
-    public UserDto getUserById(@PathVariable String userLoginId){
+    public UserProfileDto getUserById(@PathVariable String userLoginId){
         return authService.getUserByLoginId(userLoginId);
     }
 
@@ -54,5 +56,10 @@ public class AuthController {
     public ResponseEntity<String> deleteAll(){
         authService.delete();
         return ResponseEntity.status(HttpStatus.OK).body("all users deleted");
+    }
+
+    @GetMapping("/users/search")
+    public UserListDto searchUsersByPartialLoginId(@RequestParam String userLoginId) {
+        return authService.searchUsersByPartialLoginId(userLoginId);
     }
 }

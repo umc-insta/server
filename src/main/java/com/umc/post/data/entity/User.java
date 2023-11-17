@@ -1,6 +1,7 @@
 package com.umc.post.data.entity;
 
 import com.umc.post.config.security.Role;
+import com.umc.post.data.dto.UserDto;
 import jakarta.persistence.*;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -88,4 +89,14 @@ public class User implements UserDetails {
     public void addPost(Post post) {
         this.posts.add(post);
     }
+
+    public UserDto toDto(){
+        return UserDto.builder()
+                .userLoginId(this.userLoginId)
+                .userNickname(this.userNickName)
+                .userName(this.userName)
+                .profileImage(null)
+                .build();
+    }
+
 }
