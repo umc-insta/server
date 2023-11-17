@@ -4,6 +4,7 @@ import com.umc.post.config.security.TokenInfo;
 import com.umc.post.data.dto.UserDto;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
+import com.umc.post.data.dto.UserListDto;
 import com.umc.post.data.dto.UserLoginDto;
 import com.umc.post.data.entity.User;
 import com.umc.post.service.AuthService;
@@ -54,5 +55,10 @@ public class AuthController {
     public ResponseEntity<String> deleteAll(){
         authService.delete();
         return ResponseEntity.status(HttpStatus.OK).body("all users deleted");
+    }
+
+    @GetMapping("/users/search")
+    public UserListDto searchUsersByPartialLoginId(@RequestParam String userLoginId) {
+        return authService.searchUsersByPartialLoginId(userLoginId);
     }
 }

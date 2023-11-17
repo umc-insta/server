@@ -7,6 +7,7 @@ import com.umc.post.config.security.TokenInfo;
 import com.umc.post.data.dto.UserDto;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
+import com.umc.post.data.dto.UserListDto;
 import com.umc.post.data.dto.UserLoginDto;
 import com.umc.post.data.entity.User;
 import com.umc.post.repository.UserRepository;
@@ -71,6 +72,17 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     public UserInfoDto info() {
         UserInfoDto userInfoDto = SecurityUtil.getCurrentMemberId();
         return userInfoDto;
+    }
+
+    @Override
+    public UserListDto searchUsersByPartialLoginId(String userLoginId) {
+        List<User> users = userRepository.findAll().stream().filter(e -> e.getUserLoginId().contains(userLoginId))
+                .toList();
+
+        List<UserDto> userDtos = users.stream().map(User::toDto).toList();
+
+        UserListDto userListDto = new UserListDto(userDtos);
+        return userListDto;
     }
 
     @Override
