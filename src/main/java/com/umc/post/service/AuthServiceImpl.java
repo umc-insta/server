@@ -58,14 +58,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
         user.setPassword(passwordEncoder.encode(userJoinDto.getPassword()));
         user.setUserNickName(userJoinDto.getUserNickName());
         user.setUserName(userJoinDto.getUserName());
-        user.setPosts(null);
-        if(userJoinDto.getRole().equals("ROLE_ADMIN")) {
-            user.setRole(Role.ADMIN);
-        }
-        else {
-            user.setRole(Role.USER);
-        }
-
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 
