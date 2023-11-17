@@ -13,7 +13,7 @@ public class SecurityUtil {
         }
 
         UserInfoDto userInfoDto = new UserInfoDto();
-        userInfoDto.setUserId(authentication.getName());
+        userInfoDto.setUserLoginId(authentication.getName());
         userInfoDto.setMemberRole(authentication.getAuthorities().stream().toList().get(0).toString().replaceAll("ROLE_", ""));
 
         return userInfoDto;

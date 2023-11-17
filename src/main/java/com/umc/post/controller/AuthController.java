@@ -1,6 +1,7 @@
 package com.umc.post.controller;
 
 import com.umc.post.config.security.TokenInfo;
+import com.umc.post.data.dto.UserDto;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
 import com.umc.post.data.dto.UserLoginDto;
@@ -44,14 +45,9 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(authService.getAllUser());
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable String id){
-        User user = authService.getUserById(id);
-        if(user == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }else{
-            return ResponseEntity.status(HttpStatus.OK).body(user);
-        }
+    @GetMapping("/users/{userLoginId}")
+    public UserDto getUserById(@PathVariable String userLoginId){
+        return authService.getUserByLoginId(userLoginId);
     }
 
     @DeleteMapping("/users")
