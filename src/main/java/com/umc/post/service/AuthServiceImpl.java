@@ -4,6 +4,7 @@ import com.umc.post.config.security.JwtTokenProvider;
 import com.umc.post.config.security.Role;
 import com.umc.post.config.security.SecurityUtil;
 import com.umc.post.config.security.TokenInfo;
+import com.umc.post.data.dto.UserDto;
 import com.umc.post.data.dto.UserInfoDto;
 import com.umc.post.data.dto.UserJoinDto;
 import com.umc.post.data.dto.UserLoginDto;
@@ -35,26 +36,30 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
 
     @Override
     public TokenInfo login(UserLoginDto userLoginDto) {
-        User user = userRepository.findByUserId(userLoginDto.getUserId()).orElseThrow(() -> new UsernameNotFoundException("아이디 혹은 비밀번호를 확인하세요."));
+        User user = userRepository.findByUserLoginId(userLoginDto.getUserLoginId())
+                .orElseThrow(() -> new UsernameNotFoundException("아이디 혹은 비밀번호를 확인하세요."));
 
         boolean matches = passwordEncoder.matches(userLoginDto.getPassword(), user.getPassword());
-        if (!matches) throw new BadCredentialsException("아이디 혹은 비밀번호를 확인하세요.");
+        if (!matches) {
+            throw new BadCredentialsException("아이디 혹은 비밀번호를 확인하세요.");
+        }
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserId(), user.getPassword(), user.getAuthorities());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUserLoginId(), user.getPassword(),
+                user.getAuthorities());
 
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
-        tokenInfo.setEmail(user.getUserId());
+        tokenInfo.setEmail(user.getUserLoginId());
         tokenInfo.setMemberRole(user.getRole().toString());
         return tokenInfo;
     }
 
     @Override
     public void join(UserJoinDto userJoinDto) {
-        if (isDuplicate(userJoinDto.getUserId())) {
+        if (isDuplicate(userJoinDto.getUserLoginId())) {
             throw new IllegalArgumentException("User already exists with this userId");
         }
         User user = new User();
-        user.setUserId(userJoinDto.getUserId());
+        user.setUserLoginId(userJoinDto.getUserLoginId());
         user.setPassword(passwordEncoder.encode(userJoinDto.getPassword()));
         user.setUserNickName(userJoinDto.getUserNickName());
         user.setUserName(userJoinDto.getUserName());
@@ -69,25 +74,34 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        return userRepository.findByUserId(userId)
+    public UserDetails loadUserByUsername(String userLoginId) throws UsernameNotFoundException {
+        return userRepository.findByUserLoginId(userLoginId)
                 .map(this::createUserDetails)
                 .orElseThrow(() -> new UsernameNotFoundException("해당하는 유저를 찾을 수 없습니다."));
     }
 
     @Override
-    public void delete(){
+    public void delete() {
         userRepository.deleteAll();
     }
 
     @Override
-    public List<User> getAllUser(){
+    public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
     @Override
-    public User getUserById(String id){
-        return userRepository.findByUserId(id).get();
+    public UserDto getUserByLoginId(String userLoginId) {
+        User user = userRepository.findByUserLoginId(userLoginId).orElseThrow();
+
+        UserDto userDto = UserDto.builder()
+                .userLoginId(user.getUserLoginId())
+                .userNickname(user.getUserNickName())
+                .profileImage(null)
+                .userName(user.getUsername())
+                .build();
+
+        return userDto;
     }
 
     private UserDetails createUserDetails(User user) {
@@ -101,7 +115,7 @@ public class AuthServiceImpl implements AuthService, UserDetailsService {
     /*
         register 시 중복 user id 인지 체크
      */
-    private boolean isDuplicate(String id){
-        return userRepository.findByUserId(id).isPresent();
+    private boolean isDuplicate(String userLoginId) {
+        return userRepository.findByUserLoginId(userLoginId).isPresent();
     }
 }

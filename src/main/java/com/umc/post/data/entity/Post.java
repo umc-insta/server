@@ -61,7 +61,7 @@ public class Post {
                 .content(this.content)
                 .imageUrl(this.imageUrl)
                 .createdAt(this.createdAt)
-                .userId(this.user.getId())
+                .userLoginId(this.user.getUserLoginId())
                 .userNickName(this.user.getUserNickName())
                 .userName(this.user.getUsername())
                 .build();

@@ -27,7 +27,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void uploadPost(PostCreateDto request) throws IOException {
         String imageURL = s3Service.upLoadFile(request.getFile());
-        User user = userRepository.findByUserId(request.getUserId()).orElseThrow();
+        User user = userRepository.findByUserLoginId(request.getUserLoginId()).orElseThrow();
         Post post = Post.builder()
                 .content(request.getContent())
                 .user(user)
